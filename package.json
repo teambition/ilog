@@ -1,0 +1,29 @@
+{
+  "name": "ilog",
+  "version": "0.1.0",
+  "description": "light-weight, smart and pure log module",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teambition/ilog.git"
+  },
+  "keywords": [
+    "log",
+    "logger",
+    "logging",
+    "streaming",
+    "console"
+  ],
+  "author": "admin@zensh.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/teambition/ilog/issues"
+  },
+  "homepage": "https://github.com/teambition/ilog#readme",
+  "devDependencies": {
+    "standard": "^5.3.1"
+  }
+}
