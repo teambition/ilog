@@ -1,6 +1,6 @@
 {
   "name": "ilog",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "light-weight, smart and pure log module",
   "main": "index.js",
   "scripts": {

@@ -1,6 +1,7 @@
 // **Github:** https://github.com/teambition/ilog
 //
 // **License:** MIT
+'use strict'
 
 var util = require('util')
 var slice = Array.prototype.slice
@@ -64,9 +65,10 @@ ilog._stringify = function (obj) {
 
 function ErrorMessage (error) {
   var ctx = this
-  this.message = error.message || util.format(error)
   this.name = error.name || 'Error'
+  this.message = error.message || util.format(error)
 
+  if (error.status) this.status = error.status
   if (error.stack) this.stack = error.stack
   if (error instanceof Object && !Array.isArray(error)) {
     Object.keys(error).map(function (key) {
