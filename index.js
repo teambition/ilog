@@ -10,8 +10,9 @@ var levels = ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'I
 module.exports = ilog
 
 function ilog () {
-  var msg = util.format.apply(null, arguments)
-  ilog._stdout.write(msg + '\n')
+  if (arguments.length) {
+    ilog._stdout.write(ilog._assembleLog(util.format.apply(null, arguments)))
+  }
 }
 
 ilog.level = 7
@@ -20,26 +21,30 @@ ilog.levels = levels.slice()
 // ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
 levels.slice(0, 5).map(function (level, index) {
   ilog[level.toLowerCase()] = function (error) {
-    if (error == null || ilog.level < index) return
-    error = ilog._stringify(new ErrorMessage(error))
-    ilog._stderr.write(ilog._time(new Date()) + ' ' + level + ' ' + error + '\n')
+    if (error != null && index <= ilog.level) {
+      error = ilog._stringify(ilog._errorify(error))
+      ilog._stderr.write(ilog._assembleLog(error, level, ilog._time(new Date())))
+    }
   }
 })
 
-// ilog.notice, ilog.info, ilog.debug
+// ilog.notice, ilog.info
 levels.slice(5, 7).map(function (level, index) {
   index += 5
   ilog[level.toLowerCase()] = function (message) {
-    if (message == null || ilog.level < index) return
-    message = ilog._stringify(message)
-    ilog._stdout.write(ilog._time(new Date()) + ' ' + level + ' ' + message + '\n')
+    if (message != null && index <= ilog.level) {
+      message = ilog._stringify(message)
+      ilog._stdout.write(ilog._assembleLog(message, level, ilog._time(new Date())))
+    }
   }
 })
 
 ilog.debug = function () {
-  if (ilog.level < 7) return
-  var message = util.format.apply(null, arguments)
-  ilog._stdout.write(ilog._time(new Date()) + ' DEBUG ' + message + '\n')
+  if (arguments.length && ilog.level >= 7) {
+    var messages = arguments.length === 1
+      ? ilog._stringify(arguments[0]) : util.format.apply(null, arguments)
+    ilog._stdout.write(ilog._assembleLog(messages, 'DEBUG', ilog._time(new Date())))
+  }
 }
 
 ilog.auto = function (error) {
@@ -52,9 +57,11 @@ ilog.auto = function (error) {
 ilog.log = ilog
 ilog._stdout = process.stdout
 ilog._stderr = process.stderr
+
 ilog._time = function (time) {
   return '[' + time.toISOString() + ']'
 }
+
 ilog._stringify = function (obj) {
   try {
     return JSON.stringify(obj)
@@ -63,7 +70,18 @@ ilog._stringify = function (obj) {
   }
 }
 
-function ErrorMessage (error) {
+ilog._assembleLog = function (log, level, time) {
+  log = log + '\n'
+  if (level) log = level + ' ' + log
+  if (time) log = time + ' ' + log
+  return log
+}
+
+ilog._errorify = function (error) {
+  return new Errorify(error)
+}
+
+function Errorify (error) {
   var ctx = this
   this.name = error.name || 'Error'
   this.message = error.message || util.format(error)

@@ -22,19 +22,20 @@ var ilog = require('ilog')
 ### `ilog([arguments])` [no level]
 ### `ilog.log([arguments])` [no level]
 
-Format arguments to string and write it to `ilog._stdout`.
+Format one or more arguments to string and write it to `ilog._stdout`.
 
 Example:
 ```js
 ilog('hello', {a: 1, b: 2}, [1, 2, 3])
-// Out: hello { a: 1, b: 2 } [ 1, 2, 3 ]
+// Output: hello { a: 1, b: 2 } [ 1, 2, 3 ]
 ```
 
 Source Code:
 ```js
 function ilog () {
-  var msg = util.format.apply(null, arguments)
-  ilog._stdout.write(msg + '\n')
+  if (arguments.length) {
+    ilog._stdout.write(ilog._assembleLog(util.format.apply(null, arguments)))
+  }
 }
 ```
 
@@ -48,9 +49,19 @@ Format the `error` object to error string and write it to `ilog._stderr`.
 
 Example:
 ```js
+ilog.error()
+// Nothing
+
+ilog.error(null)
+// Nothing
+
 ilog.level = 3
 ilog.error(new Error('test error'))
-// Out: [2015-11-02T14:07:52.368Z] ERROR {"message":"test error","name":"Error","stack":"Error: test error\n ..."}
+// Output: [2015-11-02T14:07:52.368Z] ERROR {"message":"test error","name":"Error","stack":"Error: test error\n ..."}
+
+ilog.error('test error 2')
+// Output: [2015-11-02T14:07:52.368Z] ERROR {"name":"Error","message":"test error 2"}
+
 ilog.warning(new Error('test warning'))
 // Nothing, because log level is lower than warning level[level 4]
 ```
@@ -60,39 +71,78 @@ Source Code:
 // ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
 levels.slice(0, 5).map(function (level, index) {
   ilog[level.toLowerCase()] = function (error) {
-    if (error == null || ilog.level < index) return
-    error = ilog._stringify(new ErrorMessage(error))
-    ilog._stderr.write(ilog._time(new Date()) + ' ' + level + ' ' + error + '\n')
+    if (error != null && index <= ilog.level) {
+      error = ilog._stringify(ilog._errorify(error))
+      ilog._stderr.write(ilog._assembleLog(error, level, ilog._time(new Date())))
+    }
   }
 })
 ```
 
 ### `ilog.notice(message)` [level 5]
 ### `ilog.info(message)` [level 6]
-### `ilog.debug(message)` [level 7]
 
 Format the `message` object to string and write it to `ilog._stdout`.
 
 Example:
 ```js
-ilog.level = 6
-ilog.info({a: 1, b: 2})
-// Out: [2015-11-02T14:11:44.588Z] INFO {"a":1,"b":2}
-ilog.debug({a: 1, b: 2})
-// Nothing, because log level is lower than debug level[level 7]
+ilog.info()
+// Nothing
+
+ilog.info(null)
+// Nothing
+
+ilog.notice({a: 1, b: 2})
+// Output: [2015-11-02T14:11:44.588Z] NOTICE {"a":1,"b":2}
+
+ilog.info('{a: 1, b: 2}')
+// [2015-11-05T07:21:36.916Z] INFO "{a: 1, b: 2}"
 ```
 
 Source Code:
 ```js
-// ilog.notice, ilog.info, ilog.debug
+// ilog.notice, ilog.info
 levels.slice(5, 7).map(function (level, index) {
   index += 5
   ilog[level.toLowerCase()] = function (message) {
-    if (message == null || ilog.level < index) return
-    message = ilog._stringify(message)
-    ilog._stdout.write(ilog._time(new Date()) + ' ' + level + ' ' + message + '\n')
+    if (message != null && index <= ilog.level) {
+      message = ilog._stringify(message)
+      ilog._stdout.write(ilog._assembleLog(message, level, ilog._time(new Date())))
+    }
   }
 })
+```
+
+### `ilog.debug(message[, message, ...])` [level 7]
+
+Format one or more arguments to string and write it to `ilog._stdout`.
+if only one argument, use `JSON.stringify`, else use `util.format`
+
+Example:
+```js
+ilog.debug({a: 1, b: 2})
+// [2015-11-05T07:24:55.551Z] DEBUG {"a":1,"b":2}
+
+ilog.debug('{a: 1, b: 2}')
+// [2015-11-05T07:25:20.103Z] DEBUG "{a: 1, b: 2}"
+
+ilog.debug(null, {a: 1, b: 2}, null, [1, 2, 3])
+// [2015-11-05T07:26:03.119Z] DEBUG null { a: 1, b: 2 } null [ 1, 2, 3 ]
+
+ilog.debug('Hello, %s', [1, 2, 3], {a: 1, b: 2})
+// [2015-11-05T07:27:02.020Z] DEBUG Hello, 1,2,3 { a: 1, b: 2 }
+```
+
+Source Code:
+```js
+// ilog.notice, ilog.info
+ilog.debug = function () {
+  if (arguments.length && ilog.level >= 7) {
+    var messages = arguments.length === 1
+      ? ilog._stringify(arguments[0]) : util.format.apply(null, arguments)
+    ilog._stdout.write(ilog._assembleLog(messages, 'DEBUG', ilog._time(new Date())))
+  }
+}
 ```
 
 ### `ilog.auto(error[, message])` [level error, info, debug]
@@ -103,17 +153,16 @@ One more message will log to `ilog.debug`.
 
 Example:
 ```js
-ilog.level = 7 // default level
 ilog.auto(new Error('some error'), {a: 1, b: 2})
-// Out: [2015-11-02T14:13:24.409Z] ERROR {"message":"some error","name":"Error","stack":"Error: some error\n ..."}
+// Output: [2015-11-02T14:13:24.409Z] ERROR {"message":"some error","name":"Error","stack":"Error: some error\n ..."}
 ilog.auto(null, {a: 1, b: 2})
-// Out: [2015-11-02T14:14:18.483Z] INFO {"a":1,"b":2}
+// Output: [2015-11-02T14:14:18.483Z] INFO {"a":1,"b":2}
 ilog.auto({a: 1, b: 2})
-// Out: [2015-11-02T14:14:53.412Z] INFO {"a":1,"b":2}
+// Output: [2015-11-02T14:14:53.412Z] INFO {"a":1,"b":2}
 ilog.auto(null, {a: 1, b: 2}, [1, 2, 3])
-// Out: [2015-11-02T14:15:16.933Z] DEBUG { a: 1, b: 2 } [ 1, 2, 3 ]
+// Output: [2015-11-02T14:15:16.933Z] DEBUG { a: 1, b: 2 } [ 1, 2, 3 ]
 ilog.auto({a: 1, b: 2}, [1, 2, 3])
-// Out: [2015-11-02T14:15:41.398Z] DEBUG { a: 1, b: 2 } [ 1, 2, 3 ]
+// Output: [2015-11-02T14:15:41.398Z] DEBUG { a: 1, b: 2 } [ 1, 2, 3 ]
 ```
 
 Source Code:
@@ -157,6 +206,27 @@ ilog._stringify = function (obj) {
   } catch (e) {
     return util.format(obj)
   }
+}
+```
+
+### `ilog._assembleLog`
+Set the log format function, default to:
+
+```js
+ilog._assembleLog = function (log, level, time) {
+  log = log + '\n'
+  if (level) log = level + ' ' + log
+  if (time) log = time + ' ' + log
+  return log
+}
+```
+
+### `ilog._errorify`
+Set the error object format function, default to:
+
+```js
+ilog._errorify = function (error) {
+  return new Errorify(error)
 }
 ```
 
