@@ -3,13 +3,11 @@
 // **License:** MIT
 'use strict'
 
-var format = require('util').format
-var slice = Array.prototype.slice
-var levels = ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']
+const format = require('util').format
+const slice = Array.prototype.slice
+const levels = ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']
 
-module.exports = ilog
-
-function ilog () {
+export default function ilog () {
   if (arguments.length) {
     ilog._stdout.write(ilog._assembleLog(format.apply(null, arguments)))
   }
@@ -19,7 +17,7 @@ ilog.level = 7
 ilog.levels = levels.slice()
 
 // ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
-levels.slice(0, 5).map(function (level, index) {
+levels.slice(0, 5).map((level, index) => {
   ilog[level.toLowerCase()] = function (error) {
     if (error != null && index <= ilog.level) {
       error = ilog._stringify(ilog._errorify(error))
@@ -29,7 +27,7 @@ levels.slice(0, 5).map(function (level, index) {
 })
 
 // ilog.notice, ilog.info
-levels.slice(5, 7).map(function (level, index) {
+levels.slice(5, 7).map((level, index) => {
   index += 5
   ilog[level.toLowerCase()] = function (message) {
     if (message != null && index <= ilog.level) {
@@ -41,7 +39,7 @@ levels.slice(5, 7).map(function (level, index) {
 
 ilog.debug = function () {
   if (arguments.length && ilog.level >= 7) {
-    var messages = arguments.length === 1
+    let messages = arguments.length === 1
       ? ilog._stringify(arguments[0]) : format.apply(null, arguments)
     ilog._stdout.write(ilog._assembleLog(messages, 'DEBUG', ilog._time(new Date())))
   }
@@ -49,7 +47,7 @@ ilog.debug = function () {
 
 ilog.auto = function (error) {
   if (error instanceof Error) return ilog.error(error)
-  var args = slice.call(arguments, +(error == null))
+  let args = slice.call(arguments, +(error == null))
   if (args.length === 1) ilog.info(args[0])
   else if (args.length > 1) ilog.debug.apply(null, args)
 }
@@ -59,7 +57,7 @@ ilog._stdout = process.stdout
 ilog._stderr = process.stderr
 
 ilog._time = function (time) {
-  return '[' + time.toISOString() + ']'
+  return `[${time.toISOString()}]`
 }
 
 ilog._stringify = function (obj) {
@@ -71,9 +69,9 @@ ilog._stringify = function (obj) {
 }
 
 ilog._assembleLog = function (log, level, time) {
-  log = log + '\n'
-  if (level) log = level + ' ' + log
-  if (time) log = time + ' ' + log
+  log = `${log}\n`
+  if (level) log = `${level} ${log}`
+  if (time) log = `${time} ${log}`
   return log
 }
 
@@ -89,7 +87,7 @@ function Errorify (error) {
   if (error.status) this.status = error.status
   if (error.stack) this.stack = error.stack
   if (error instanceof Object && !Array.isArray(error)) {
-    Object.keys(error).map(function (key) {
+    Object.keys(error).map((key) => {
       if (!ctx[key]) ctx[key] = error[key]
     })
   }

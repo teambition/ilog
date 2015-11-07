@@ -1,8 +1,9 @@
 {
   "name": "ilog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "light-weight, smart and pure log module",
   "main": "index.js",
+  "jsnext:main": "index.es6.js",
   "scripts": {
     "test": "standard && mocha"
   },
