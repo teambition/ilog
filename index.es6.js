@@ -80,15 +80,17 @@ ilog._errorify = function (error) {
 }
 
 function Errorify (error) {
-  var ctx = this
   this.name = error.name || 'Error'
   this.message = error.message || format(error)
 
+  if (error.code) this.code = error.code
+  if (error.errno) this.errno = error.errno
   if (error.status) this.status = error.status
-  if (error.stack) this.stack = error.stack
-  if (error instanceof Object && !Array.isArray(error)) {
+  if (error.syscall) this.syscall = error.syscall
+  if (!Array.isArray(error)) {
     Object.keys(error).map((key) => {
-      if (!ctx[key]) ctx[key] = error[key]
+      if (!this[key]) this[key] = error[key]
     })
   }
+  if (error.stack) this.stack = error.stack
 }

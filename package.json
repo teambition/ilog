@@ -1,6 +1,6 @@
 {
   "name": "ilog",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "light-weight, smart and pure log module",
   "main": "index.js",
   "jsnext:main": "index.es6.js",
@@ -20,12 +20,15 @@
   ],
   "author": "admin@zensh.com",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/teambition/ilog/issues"
-  },
-  "homepage": "https://github.com/teambition/ilog#readme",
+  "homepage": "https://github.com/teambition/ilog",
+  "dependencies": {},
   "devDependencies": {
     "mocha": "^2.3.3",
     "standard": "^5.3.1"
-  }
+  },
+  "files": [
+    "README.md",
+    "index.js",
+    "index.es6.js"
+  ]
 }
