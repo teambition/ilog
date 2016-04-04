@@ -1,11 +1,11 @@
 {
   "name": "ilog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "light-weight, smart and pure log module",
   "main": "index.js",
   "jsnext:main": "index.es6.js",
   "scripts": {
-    "test": "standard && mocha"
+    "test": "standard && tman"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,8 @@
   "homepage": "https://github.com/teambition/ilog",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^2.3.3",
-    "standard": "^5.3.1"
+    "standard": "^6.0.8",
+    "tman": "^0.5.2"
   },
   "files": [
     "README.md",

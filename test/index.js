@@ -1,12 +1,12 @@
 'use strict'
-/*global describe, it */
 
 var assert = require('assert')
+var tman = require('tman')
 var ilog = require('../index.js')
 var format = require('util').format
 
-describe('ilog', function () {
-  it('ilog.log', function () {
+tman.suite('ilog', function () {
+  tman.it('ilog.log', function () {
     assert.strictEqual(ilog.log, ilog)
     ilog.log()
     assert.strictEqual(getStdout(), void 0)
@@ -24,7 +24,7 @@ describe('ilog', function () {
     assert.strictEqual(getStdout(), format(null, 0, []) + '\n')
   })
 
-  it('ilog.level, ilog.levels', function () {
+  tman.it('ilog.level, ilog.levels', function () {
     assert.strictEqual(ilog.level, 7)
     ilog.level = -1
     ilog.emergency(new Error('test'))
@@ -100,7 +100,7 @@ describe('ilog', function () {
     ilog.level = 7
   })
 
-  it('ilog._time', function () {
+  tman.it('ilog._time', function () {
     var _time = ilog._time
     ilog._time = function (time) {
       assert.strictEqual(time instanceof Date, true)
@@ -119,7 +119,7 @@ describe('ilog', function () {
     ilog._time = _time
   })
 
-  it('ilog._stringify', function () {
+  tman.it('ilog._stringify', function () {
     var _stringify = ilog._stringify
     ilog._stringify = function (obj) {
       assert.deepEqual(obj, [1, 2, 3])
@@ -132,7 +132,7 @@ describe('ilog', function () {
     ilog._stringify = _stringify
   })
 
-  it('ilog._assembleLog', function () {
+  tman.it('ilog._assembleLog', function () {
     var _assembleLog = ilog._assembleLog
     ilog._assembleLog = function (log, level, time) {
       assert.deepEqual(log, JSON.stringify([1, 2, 3]))
@@ -147,7 +147,7 @@ describe('ilog', function () {
     ilog._assembleLog = _assembleLog
   })
 
-  it('ilog.error, ilog._errorify', function () {
+  tman.it('ilog.error, ilog._errorify', function () {
     var err = new Error('err')
     var _errorify = ilog._errorify
     ilog._errorify = function (error) {
@@ -181,7 +181,7 @@ describe('ilog', function () {
     assert.strictEqual(res.test, 'test')
   })
 
-  it('ilog.debug', function () {
+  tman.it('ilog.debug', function () {
     ilog.debug()
     assert.strictEqual(getStdout(), void 0)
 
@@ -197,7 +197,7 @@ describe('ilog', function () {
     assert.strictEqual(res[2], 'null 0 {} []')
   })
 
-  it('ilog.auto', function () {
+  tman.it('ilog.auto', function () {
     ilog.auto()
     assert.strictEqual(getStderr(), void 0)
     assert.strictEqual(getStdout(), void 0)
