@@ -1,9 +1,9 @@
 'use strict'
 
-var assert = require('assert')
-var tman = require('tman')
-var ilog = require('../index.js')
-var format = require('util').format
+const assert = require('assert')
+const tman = require('tman')
+const ilog = require('../index.js')
+const format = require('util').format
 
 tman.suite('ilog', function () {
   tman.it('ilog.log', function () {
@@ -101,7 +101,7 @@ tman.suite('ilog', function () {
   })
 
   tman.it('ilog._time', function () {
-    var _time = ilog._time
+    let _time = ilog._time
     ilog._time = function (time) {
       assert.strictEqual(time instanceof Date, true)
       return ''
@@ -120,20 +120,20 @@ tman.suite('ilog', function () {
   })
 
   tman.it('ilog._stringify', function () {
-    var _stringify = ilog._stringify
+    let _stringify = ilog._stringify
     ilog._stringify = function (obj) {
       assert.deepEqual(obj, [1, 2, 3])
       return 'test'
     }
     ilog.info([1, 2, 3])
-    var res = getStdout()
+    let res = getStdout()
     res = res.slice(res.indexOf(' ') + 1)
     assert.strictEqual(res, 'INFO test\n')
     ilog._stringify = _stringify
   })
 
   tman.it('ilog._assembleLog', function () {
-    var _assembleLog = ilog._assembleLog
+    let _assembleLog = ilog._assembleLog
     ilog._assembleLog = function (log, level, time) {
       assert.deepEqual(log, JSON.stringify([1, 2, 3]))
       assert.strictEqual(level, 'INFO')
@@ -141,21 +141,21 @@ tman.suite('ilog', function () {
       return 'test'
     }
     ilog.info([1, 2, 3])
-    var res = getStdout()
+    let res = getStdout()
     res = res.slice(res.indexOf(' ') + 1)
     assert.strictEqual(res, 'test')
     ilog._assembleLog = _assembleLog
   })
 
   tman.it('ilog.error, ilog._errorify', function () {
-    var err = new Error('err')
-    var _errorify = ilog._errorify
+    let err = new Error('err')
+    let _errorify = ilog._errorify
     ilog._errorify = function (error) {
       assert.strictEqual(error, err)
       return [{}]
     }
     ilog.error(err)
-    var res = getStderr()
+    let res = getStderr()
     res = res.slice(res.indexOf(' ') + 1)
     assert.strictEqual(res, 'ERROR [{}]\n')
     ilog._errorify = _errorify
@@ -192,7 +192,7 @@ tman.suite('ilog', function () {
     assert.deepEqual(validStandardLog(getStdout(), 'DEBUG'), {message: 'message'})
 
     ilog.debug(null, 0, {}, [])
-    var res = splitLog(getStdout())
+    let res = splitLog(getStdout())
     assert.strictEqual(res[1], 'DEBUG')
     assert.strictEqual(res[2], 'null 0 {} []')
   })
@@ -222,7 +222,7 @@ tman.suite('ilog', function () {
     assert.deepEqual(validStandardLog(getStdout(), 'INFO'), [1, 2, 3])
 
     ilog.auto(0, {}, [])
-    var res = splitLog(getStdout())
+    let res = splitLog(getStdout())
     assert.strictEqual(res[1], 'DEBUG')
     assert.strictEqual(res[2], '0 {} []')
 
@@ -235,38 +235,38 @@ tman.suite('ilog', function () {
 
 // fake write stream
 
-var _stdout
+let _stdout
 ilog._stdout = {}
 ilog._stdout.write = function (str) {
   _stdout = str
 }
 
 function getStdout () {
-  var res = _stdout
+  let res = _stdout
   _stdout = void 0
   return res
 }
 
-var _stderr
+let _stderr
 ilog._stderr = {}
 ilog._stderr.write = function (str) {
   _stderr = str
 }
 
 function getStderr () {
-  var res = _stderr
+  let res = _stderr
   _stderr = void 0
   return res
 }
 
 function splitLog (log) {
-  var res = /^(\S+) (\S+) ([^]+)$/.exec(log.slice(0, -1))
+  let res = /^(\S+) (\S+) ([^]+)$/.exec(log.slice(0, -1))
   return res.slice(1)
 }
 
 function validStandardLog (log, level) {
   assert.strictEqual(typeof log, 'string')
-  var res = splitLog(log)
+  let res = splitLog(log)
   assert.strictEqual(new Date(res[0].slice(1, -1)) <= Date.now(), true)
   assert.strictEqual(res[1], level)
   return JSON.parse(res[2])

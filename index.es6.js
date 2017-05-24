@@ -89,7 +89,7 @@ function Errorify (error) {
   if (error.syscall) this.syscall = error.syscall
   if (!Array.isArray(error)) {
     Object.keys(error).map((key) => {
-      if (!this[key]) this[key] = error[key]
+      if (this[key] == null) this[key] = error[key]
     })
   }
   if (error.stack) this.stack = error.stack
