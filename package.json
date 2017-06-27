@@ -1,6 +1,6 @@
 {
   "name": "ilog",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "light-weight, smart and pure log module",
   "main": "index.js",
   "jsnext:main": "index.es6.js",
@@ -27,7 +27,7 @@
   "dependencies": {},
   "devDependencies": {
     "standard": "^10.0.2",
-    "tman": "^1.6.7"
+    "tman": "^1.6.9"
   },
   "files": [
     "README.md",

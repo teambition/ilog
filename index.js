@@ -85,14 +85,14 @@ function Errorify (error) {
   this.name = error.name || 'Error'
   this.message = error.message || format(error)
 
-  if (error.code) this.code = error.code
-  if (error.errno) this.errno = error.errno
-  if (error.status) this.status = error.status
-  if (error.syscall) this.syscall = error.syscall
+  if (error.code != null) this.code = error.code
+  if (error.errno != null) this.errno = error.errno
+  if (error.status != null) this.status = error.status
+  if (error.syscall != null) this.syscall = error.syscall
   if (!Array.isArray(error)) {
     Object.keys(error).map((key) => {
       if (this[key] == null) this[key] = error[key]
     })
   }
-  if (error.stack) this.stack = error.stack
+  if (error.stack != null) this.stack = error.stack
 }

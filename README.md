@@ -1,11 +1,10 @@
-ilog
-====
+# ilog
+
 light-weight, smart and pure log module.
 
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
-
 
 ## Installation
 
@@ -16,21 +15,24 @@ npm install ilog
 ## API
 
 ```js
-var ilog = require('ilog')
+const ilog = require('ilog')
 ```
 
 ### `ilog([arguments])` [no level]
+
 ### `ilog.log([arguments])` [no level]
 
 Format one or more arguments to string and write it to `ilog._stdout`.
 
 Example:
+
 ```js
 ilog('hello', {a: 1, b: 2}, [1, 2, 3])
 // Output: hello { a: 1, b: 2 } [ 1, 2, 3 ]
 ```
 
 Source Code:
+
 ```js
 function ilog () {
   if (arguments.length) {
@@ -40,14 +42,19 @@ function ilog () {
 ```
 
 ### `ilog.emergency(error)` [level 0]
+
 ### `ilog.alert(error)` [level 1]
+
 ### `ilog.critical(error)` [level 2]
+
 ### `ilog.error(error)` [level 3]
+
 ### `ilog.warning(error)` [level 4]
 
 Format the `error` object to error string and write it to `ilog._stderr`.
 
 Example:
+
 ```js
 ilog.error()
 // Nothing
@@ -67,6 +74,7 @@ ilog.warning(new Error('test warning'))
 ```
 
 Source Code:
+
 ```js
 // ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
 levels.slice(0, 5).map(function (level, index) {
@@ -80,11 +88,13 @@ levels.slice(0, 5).map(function (level, index) {
 ```
 
 ### `ilog.notice(message)` [level 5]
+
 ### `ilog.info(message)` [level 6]
 
 Format the `message` object to string and write it to `ilog._stdout`.
 
 Example:
+
 ```js
 ilog.info()
 // Nothing
@@ -100,6 +110,7 @@ ilog.info('{a: 1, b: 2}')
 ```
 
 Source Code:
+
 ```js
 // ilog.notice, ilog.info
 levels.slice(5, 7).map(function (level, index) {
@@ -119,6 +130,7 @@ Format one or more arguments to string and write it to `ilog._stdout`.
 if only one argument, use `JSON.stringify`, else use `util.format`
 
 Example:
+
 ```js
 ilog.debug({a: 1, b: 2})
 // [2015-11-05T07:24:55.551Z] DEBUG {"a":1,"b":2}
@@ -134,11 +146,12 @@ ilog.debug('Hello, %s', [1, 2, 3], {a: 1, b: 2})
 ```
 
 Source Code:
+
 ```js
 // ilog.notice, ilog.info
 ilog.debug = function () {
   if (arguments.length && ilog.level >= 7) {
-    var messages = arguments.length === 1
+    let messages = arguments.length === 1
       ? ilog._stringify(arguments[0]) : util.format.apply(null, arguments)
     ilog._stdout.write(ilog._assembleLog(messages, 'DEBUG', ilog._time(new Date())))
   }
@@ -152,6 +165,7 @@ A message will log to `ilog.info`.
 One more message will log to `ilog.debug`.
 
 Example:
+
 ```js
 ilog.auto(new Error('some error'), {a: 1, b: 2})
 // Output: [2015-11-02T14:13:24.409Z] ERROR {"message":"some error","name":"Error","stack":"Error: some error\n ..."}
@@ -166,28 +180,34 @@ ilog.auto({a: 1, b: 2}, [1, 2, 3])
 ```
 
 Source Code:
+
 ```js
 ilog.auto = function (error) {
   if (error instanceof Error) return ilog.error(error)
-  var args = slice.call(arguments, +(error == null))
+  let args = slice.call(arguments, +(error == null))
   if (args.length === 1) ilog.info(args[0])
   else if (args.length > 1) ilog.debug.apply(null, args)
 }
 ```
 
 ### `ilog.level`
+
 Set the log level, default to `7`
 
 ### `ilog.levels`
+
 All log levels: `['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']`.
 
 ### `ilog._stdout`
+
 Set the log standard out stream, default to `process.stdout`
 
 ### `ilog._stderr`
+
 Set the log error out stream, default to `process.stderr`
 
 ### `ilog._time`
+
 Set the time format function, default to:
 
 ```js
@@ -197,6 +217,7 @@ ilog._time = function (time) {
 ```
 
 ### `ilog._stringify`
+
 Set the object format function, default to:
 
 ```js
@@ -210,6 +231,7 @@ ilog._stringify = function (obj) {
 ```
 
 ### `ilog._assembleLog`
+
 Set the log format function, default to:
 
 ```js
@@ -222,6 +244,7 @@ ilog._assembleLog = function (log, level, time) {
 ```
 
 ### `ilog._errorify`
+
 Set the error object format function, default to:
 
 ```js
