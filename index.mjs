@@ -3,11 +3,13 @@
 // **License:** MIT
 'use strict'
 
-const format = require('util').format
+import util from 'util'
+
+const format = util.format
 const slice = Array.prototype.slice
 const levels = ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']
 
-export default function ilog () {
+function ilog () {
   if (arguments.length) {
     ilog._stdout.write(ilog._assembleLog(format.apply(null, arguments)))
   }
@@ -94,3 +96,5 @@ function Errorify (error) {
   }
   if (error.stack != null) this.stack = error.stack
 }
+
+export { ilog as default }
