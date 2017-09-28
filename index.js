@@ -5,7 +5,10 @@
 
 const format = require('util').format
 const slice = Array.prototype.slice
-const levels = ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']
+
+// Level represents logging level
+// https://en.wikipedia.org/wiki/Syslog
+const levels = ['EMERG', 'ALERT', 'CRIT', 'ERR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']
 
 module.exports = ilog
 
@@ -55,6 +58,9 @@ ilog.auto = function (error) {
 }
 
 ilog.log = ilog
+ilog.error = ilog.err
+ilog.critical = ilog.crit
+ilog.emergency = ilog.emerg
 ilog._stdout = process.stdout
 ilog._stderr = process.stderr
 

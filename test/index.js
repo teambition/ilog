@@ -162,14 +162,14 @@ function test (ilog) {
       ilog.error(err)
       let res = getStderr()
       res = res.slice(res.indexOf(' ') + 1)
-      assert.strictEqual(res, 'ERROR [{}]\n')
+      assert.strictEqual(res, 'ERR [{}]\n')
       ilog._errorify = _errorify
 
       ilog.error()
       assert.strictEqual(getStderr(), void 0)
 
       ilog.error({message: 'message'})
-      res = validStandardLog(getStderr(), 'ERROR')
+      res = validStandardLog(getStderr(), 'ERR')
       assert.strictEqual(res.name, 'Error')
       assert.strictEqual(res.message, 'message')
       assert.strictEqual(res.stack, void 0)
@@ -178,7 +178,7 @@ function test (ilog) {
       err.stack = 'stack'
       err.test = 'test'
       ilog.error(err)
-      res = validStandardLog(getStderr(), 'ERROR')
+      res = validStandardLog(getStderr(), 'ERR')
       assert.strictEqual(res.name, 'Error')
       assert.strictEqual(res.message, 'err')
       assert.strictEqual(res.stack, 'stack')
@@ -212,10 +212,10 @@ function test (ilog) {
       assert.strictEqual(getStdout(), void 0)
 
       ilog.auto(new Error('err1'))
-      assert.strictEqual(validStandardLog(getStderr(), 'ERROR').message, 'err1')
+      assert.strictEqual(validStandardLog(getStderr(), 'ERR').message, 'err1')
 
       ilog.auto(new Error('err2'), [1, 2, 3])
-      assert.strictEqual(validStandardLog(getStderr(), 'ERROR').message, 'err2')
+      assert.strictEqual(validStandardLog(getStderr(), 'ERR').message, 'err2')
       assert.strictEqual(getStdout(), void 0)
 
       ilog.auto(null, [1, 2, 3])
