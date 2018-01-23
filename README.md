@@ -190,13 +190,13 @@ ilog.auto = function (error) {
 }
 ```
 
-### `ilog.level`
+### `ilog.setLevel(level)`
 
-Set the log level, default to `7`
+Set the log `level`, any value in `ilog.levels` will be fine, default to `DEBUG`
 
 ### `ilog.levels`
 
-All log levels: `['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']`.
+All log levels: `['EMERG', 'ALERT', 'CRIT', 'ERR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG']`.
 
 ### `ilog._stdout`
 
