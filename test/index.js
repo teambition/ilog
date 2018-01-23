@@ -105,6 +105,18 @@ function test (ilog) {
       ilog.level = 7
     })
 
+    tman.it('ilog.setLevel', function () {
+      ilog.level = 0
+
+      ilog.setLevel(1)
+      assert.strictEqual(ilog.level, 1)
+
+      ilog.setLevel('WARNING')
+      assert.strictEqual(ilog.level, ilog.levels.indexOf('WARNING'))
+
+      ilog.level = 7
+    })
+
     tman.it('ilog._time', function () {
       let _time = ilog._time
       ilog._time = function (time) {

@@ -18,8 +18,19 @@ function ilog () {
   }
 }
 
-ilog.level = 7
 ilog.levels = levels.slice()
+
+ilog.setLevel = function (level) {
+  ilog.level = level
+
+  if (typeof level === 'string') {
+    let idx = levels.indexOf(level)
+    if (idx >= 0) {
+      ilog.level = idx
+    }
+  }
+}
+ilog.setLevel('DEBUG')
 
 // ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
 levels.slice(0, 5).map((level, index) => {
