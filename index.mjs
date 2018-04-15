@@ -18,6 +18,7 @@ function ilog () {
   }
 }
 
+ilog.ilog = ilog
 ilog.levels = levels.slice()
 
 ilog.setLevel = function (level) {
@@ -70,6 +71,7 @@ ilog.auto = function (error) {
 
 ilog.log = ilog
 ilog.error = ilog.err
+ilog.warn = ilog.warning
 ilog.critical = ilog.crit
 ilog.emergency = ilog.emerg
 ilog._stdout = process.stdout
@@ -114,4 +116,4 @@ function Errorify (error) {
   if (error.stack != null) this.stack = error.stack
 }
 
-export { ilog as default }
+export { ilog, ilog as default }
