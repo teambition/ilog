@@ -19,5 +19,9 @@ interface ilog {
   _assembleLog(log: string, level: string, time: string): string;
 }
 
-declare const ilog: ilog;
+declare function ilog (message?: any, ...optionalParams: any[]): void;
+declare namespace ilog {
+  export const ilog: ilog;
+}
+
 export = ilog;

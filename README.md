@@ -18,6 +18,11 @@ npm install ilog
 const ilog = require('ilog')
 ```
 
+or
+```ts
+import { ilog } from 'ilog'
+```
+
 ### `ilog([arguments])` [no level]
 
 ### `ilog.log([arguments])` [no level]
@@ -41,11 +46,11 @@ function ilog () {
 }
 ```
 
-### `ilog.emergency(error)` [level 0]
+### `ilog.emerg(error)` [level 0]
 
 ### `ilog.alert(error)` [level 1]
 
-### `ilog.critical(error)` [level 2]
+### `ilog.crit(error)` [level 2]
 
 ### `ilog.error(error)` [level 3]
 
@@ -76,7 +81,7 @@ ilog.warning(new Error('test warning'))
 Source Code:
 
 ```js
-// ilog.emergency, ilog.alert, ilog.critical, ilog.error, ilog.warning
+// ilog.emerg, ilog.alert, ilog.crit, ilog.error, ilog.warning
 levels.slice(0, 5).map(function (level, index) {
   ilog[level.toLowerCase()] = function (error) {
     if (error != null && index <= ilog.level) {
